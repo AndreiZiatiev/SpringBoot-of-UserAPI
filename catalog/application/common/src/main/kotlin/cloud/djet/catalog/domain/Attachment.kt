@@ -12,7 +12,6 @@ import org.hibernate.annotations.LazyCollectionOption
 * This type is for containing or referencing attachments - additional data content defined in other formats. The most common use of this type is to include images or reports in some report format such as PDF. However it can be used for any data that has a MIME type.  http://build.fhir.org//datatypes.html#Attachment
 * @param header Management information for document
 * @param contentType Mime type of the content, with charset etc.
-* @param fileFormat Format of the attached file.
 * @param language Human language of the content (BCP-47)
 * @param data Data inline, base64ed
 * @param url Uri where the data can be found
@@ -38,9 +37,6 @@ data class Attachment(
 
 	@Column(name = "content_type")
 	var contentType: String?,
-
-	@Column(name = "file_format")
-	var fileFormat: String?,
 
 	@Column(name = "language")
 	var language: String?,

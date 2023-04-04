@@ -193,6 +193,8 @@ CONTACT_TYPE,HR,Human Resource,Contact details for issues related to Human Resou
 CONTACT_TYPE,PAYOR,Payor,Contact details for dealing with issues related to insurance claims/adjudication/payment.
 CONTACT_TYPE,PATINF,Patient,Generic information contact for patients.
 CONTACT_TYPE,PRESS,Press,Dedicated contact point for matters relating to press enquiries. 
+LEGAL_ENTITY_TYPE,PERSONAL,Personal,Legal entity contains personal legal information.
+LEGAL_ENTITY_TYPE,BUSINESS,Business,Legal entity contains legal information about not personal entity recognized by government under jurisdiction it operates. 
 CONTACT_POINT_SYSTEM,phone,Phone,The value is a telephone number used for voice calls. Use of full international numbers starting with + is recommended to enable automatic dialing support but not required.
 CONTACT_POINT_SYSTEM,fax,Fax,The value is a fax machine. Use of full international numbers starting with + is recommended to enable automatic dialing support but not required.
 
@@ -216,6 +218,13 @@ ENTITY_STATE,PENDING,Pending,Entity pending approval and can't be used.
 ENTITY_STATE,ACTIVE,Active,Entity in active state and can be used.
 ENTITY_STATE,RETIRED,Retired,Entity retired and cannot be executed any more.
 ENTITY_STATE,ERROR,Error,Entity in have error and can't be used.
+PAYMENT_INSTRUMENT_TYPE,CASH,Cash,Cash used as the financial instrument for payment.
+PAYMENT_INSTRUMENT_TYPE,CARD,Card,Credit or debit card used as financial instrument.
+PAYMENT_INSTRUMENT_TYPE,CHECK,Check,Bank check used as financial instrument.
+PAYMENT_INSTRUMENT_TYPE,TRANSFER,Transfer,Transfer money from bank account used as financial instrument.
+PAYMENT_INSTRUMENT_TYPE,WALLET,Wallet,Electronic wallet application used as payment instrument.
+PAYMENT_INSTRUMENT_TYPE,NETWORK,Network,Payment network used as financial instrument. 
+PAYMENT_INSTRUMENT_TYPE,CRYPTOCURRENCY,Cryptocurrency,Cryptocurrency used as payment instrument.
 IDENTIFIER_USE,usual,Usual,The identifier recommended for display and use in real-world interactions.
 IDENTIFIER_USE,official,Official,The identifier considered to be most trusted for the identification of this item.
 IDENTIFIER_USE,temp,Temp,A temporary identifier.
@@ -225,6 +234,8 @@ IDENTIFIER_USE,old,Old,The identifier id no longer considered valid, but may be 
 GENDER,MALE,Male,Gander specified as male.
 GENDER,FEMALE,Female,Gender specified as female.
 GENDER,NOT_APPLICABLE,Not applicable ,Gender specification not applicable.
+ACCOUNT_TYPE,SERVICE,Service,Account used to provide services to persons presented on the Network.
+ACCOUNT_TYPE,SUPPORT,Support,Account used to provide support to other parties of the network.
 IDENTIFIER_TYPE,DL,Driver's license number,Driver's license number
 IDENTIFIER_TYPE,PPN,Passport number,Passport number
 IDENTIFIER_TYPE,BRN,Breed Registry Number,Breed Registry Number
@@ -515,6 +526,8 @@ COUNTRY,EH,Western Sahara,212
 COUNTRY,YE,Yemen,967
 COUNTRY,ZM,Zambia,260
 COUNTRY,ZW,Zimbabwe,263
+REGION,US-WEST-2,US-WEST-2,Western region of USA
+REGION,US-EAST-2,US-EAST-2,Eastern region of USA
 LOCATION_STATUS,active,Active,The location is operational.
 LOCATION_STATUS,suspended,Suspended,The location is temporarily closed.
 LOCATION_STATUS,inactive,Inactive,The location is no longer used
@@ -661,3 +674,6 @@ LOCATION_TYPE,ca,Cabinet,A container that can store goods, equipment, medication
 LOCATION_TYPE,rd,Road,A defined path to travel between 2 points that has a known name.
 LOCATION_TYPE,area,Area,A defined physical boundary of something, such as a flood risk zone, region, postcode
 LOCATION_TYPE,jdn,Jurisdiction	,A wide scope that covers a conceptual domain, such as a Nation (Country wide community or Federal Government - e.g. Ministry of Health), Province or State (community or Government), Business (throughout the enterprise), Nation with a business scope of an agency (e.g. CDC, FDA etc.) or a Business segment (UK Pharmacy), not just an physical boundary
+PARTY_TYPE,PERSON,Person,Party is an individual maintaining his representation in the Network.
+PARTY_TYPE,CLINIC,Clinic,Medical organization presented as party on the Network.
+PARTY_TYPE,PROVIDER,Provider,Service provider for other parties on the Network. Provider can supply materials, support financial activities, manage equipment and so on.

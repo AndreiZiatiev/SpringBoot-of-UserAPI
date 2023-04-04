@@ -1,11 +1,8 @@
 package cloud.djet.catalog.catalog.controller
 
-import cloud.djet.catalog.catalog.domain.Contact
-import cloud.djet.catalog.catalog.domain.Address
-import cloud.djet.catalog.domain.Element
-import cloud.djet.catalog.domain.Period
+import cloud.djet.catalog.catalog.domain.Party
 import cloud.djet.catalog.catalog.CatalogApplication
-import cloud.djet.catalog.catalog.repository.ContactsRepository
+import cloud.djet.catalog.catalog.repository.PartiesRepository
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,15 +17,15 @@ import kotlin.test.*
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(classes = [CatalogApplication::class])
 @AutoConfigureMockMvc
-class ContactsApiIT : AbstractIntegrationTest<Contact>() {
+class PartiesApiIT : AbstractIntegrationTest<Party>() {
 
-	private val url = "/contacts"
+	private val url = "/parties"
 
 	@Autowired
-	lateinit var repository: ContactsRepository
+	lateinit var repository: PartiesRepository
 
 	@Test
-	fun `contactsCreateContact with required fields`() {
+	fun `partiesCreateParty with required fields`() {
 		val res = createWithRequiredFields()
 		val result = super.create(url, res)
 		val savedRes = repository.getById(findIdentityId(result))
@@ -36,7 +33,7 @@ class ContactsApiIT : AbstractIntegrationTest<Contact>() {
 	}
 
 	@Test
-	fun `contactsCreateContact with all fields`() {
+	fun `partiesCreateParty with all fields`() {
 		val res = createWithAllFields()
 		val result = super.create(url, res)
 		val savedRes = repository.getById(findIdentityId(result))
@@ -44,7 +41,7 @@ class ContactsApiIT : AbstractIntegrationTest<Contact>() {
 	}
 
 	@Test
-	fun `contactsGetContact with required fields`() {
+	fun `partiesGetParty with required fields`() {
 		val res = createWithRequiredFields()
 		val savedRes = repository.save(res)
 
@@ -53,7 +50,7 @@ class ContactsApiIT : AbstractIntegrationTest<Contact>() {
 	}
 
 	@Test
-	fun `contactsGetContact with all fields`() {
+	fun `partiesGetParty with all fields`() {
 		val res = createWithAllFields()
 		val savedRes = repository.save(res)
 
@@ -62,7 +59,7 @@ class ContactsApiIT : AbstractIntegrationTest<Contact>() {
 	}
 
 	@Test
-	fun `contactsGetContactList api`() {
+	fun `partiesGetPartyList api`() {
 		repository.deleteAll()
 		val res1 = createWithRequiredFields()
 		val res2 = createWithAllFields()
@@ -79,18 +76,7 @@ class ContactsApiIT : AbstractIntegrationTest<Contact>() {
 	}
 
 	@Test
-	fun `contactsModifyContact with all fields`() {
-		val res = createWithAllFields()
-		val savedRes = repository.save(res)
-		savedRes.identity.name = "new identity"
-		savedRes.identity.description = "new description"
-
-		val result = super.update(url, savedRes.id!!, savedRes)
-		resourceAsserts(savedRes, result)
-	}
-
-	@Test
-	fun `contactsUpdateContact with required fields`() {
+	fun `partiesUpdateParty with required fields`() {
 		val res = createWithRequiredFields()
 		val savedRes = repository.save(res)
 		savedRes.identity.name = "new identity"
@@ -101,7 +87,7 @@ class ContactsApiIT : AbstractIntegrationTest<Contact>() {
 	}
 
 	@Test
-	fun `contactsUpdateContact with all fields`() {
+	fun `partiesUpdateParty with all fields`() {
 		val res = createWithAllFields()
 		val savedRes = repository.save(res)
 		savedRes.identity.name = "new identity"
@@ -112,7 +98,7 @@ class ContactsApiIT : AbstractIntegrationTest<Contact>() {
 	}
 
 
-	private fun resourceAsserts(savedResource: Contact, result: MvcResult, index: Int = -1) {
+	private fun resourceAsserts(savedResource: Party, result: MvcResult, index: Int = -1) {
 		val prefix = if (index == -1) "$" else "$.content[$index]"
 		if (savedResource.id != null) {
 			assertEquals(savedResource.id, getValue(result, "$prefix.identity.id"))
@@ -123,33 +109,15 @@ class ContactsApiIT : AbstractIntegrationTest<Contact>() {
 		assertEquals(savedResource.identity.description, getValue(result, "$prefix.identity.description"))
 		assertEquals(savedResource.entity.state, getValue(result, "$prefix.entity.state"))
 		assertEquals(savedResource.type, getValue(result, "$prefix.type"))
-		assertListsEquals(savedResource.address, getValue(result, "$prefix.address"))
-		assertEquals(savedResource.person, getValue(result, "$prefix.person"))
+		assertEquals(savedResource.region, getValue(result, "$prefix.region"))
+		assertEquals(savedResource.partyCode, getValue(result, "$prefix.partyCode"))
 	}
 
-	private fun createWithRequiredFields(): Contact {
-	return Contact(
-				type = "test_enum_value",
-				address = listOf(Address(
-					header = Element(
-					order = 8,
-					rank = 8,
-					period = Period(
-					start = Date(),
-					end = Date()
-				)
-				),
-					use = "test_enum_value",
-					type = "test_enum_value",
-					text = "test string value",
-					line = listOf("test_list_string_value"),
-					city = "test string value",
-					district = "test string value",
-					state = "test string value",
-					postalCode = "test string value",
-					country = "test_enum_value"
-				)),
-				person = null
+	private fun createWithRequiredFields(): Party {
+	return Party(
+				type = null,
+				region = null,
+				partyCode = null
 		).apply {
 			this.identity.name = "test name"
 			this.identity.description = "test description"
@@ -157,29 +125,11 @@ class ContactsApiIT : AbstractIntegrationTest<Contact>() {
 		}
 	}
 
-	private fun createWithAllFields(): Contact {
-		return Contact(
+	private fun createWithAllFields(): Party {
+		return Party(
 				type = "test_enum_value",
-				address = listOf(Address(
-					header = Element(
-					order = 8,
-					rank = 8,
-					period = Period(
-					start = Date(),
-					end = Date()
-				)
-				),
-					use = "test_enum_value",
-					type = "test_enum_value",
-					text = "test string value",
-					line = listOf("test_list_string_value"),
-					city = "test string value",
-					district = "test string value",
-					state = "test string value",
-					postalCode = "test string value",
-					country = "test_enum_value"
-				)),
-				person = "test string value"
+				region = "test_enum_value",
+				partyCode = "test string value"
 		).apply {
 			this.identity.name = "test user name"
 			this.identity.description = "test user description"

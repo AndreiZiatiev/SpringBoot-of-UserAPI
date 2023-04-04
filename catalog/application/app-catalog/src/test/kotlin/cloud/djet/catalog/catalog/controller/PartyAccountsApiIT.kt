@@ -1,17 +1,20 @@
 package cloud.djet.catalog.catalog.controller
 
-import cloud.djet.catalog.catalog.domain.Person
-import cloud.djet.catalog.catalog.domain.Identifier
+import cloud.djet.catalog.catalog.domain.Account
+import cloud.djet.catalog.catalog.domain.PaymentInstrument
 import cloud.djet.catalog.domain.Element
 import cloud.djet.catalog.domain.Period
-import cloud.djet.catalog.catalog.domain.ReferenceIdentity
-import cloud.djet.catalog.domain.Attachment
+import cloud.djet.catalog.catalog.domain.PaymentInstrumentSpec
+import cloud.djet.catalog.catalog.domain.BankSpec
+import cloud.djet.catalog.catalog.domain.CardSpec
+import cloud.djet.catalog.catalog.domain.BillingInformation
+import cloud.djet.catalog.catalog.domain.Address
 import cloud.djet.catalog.catalog.domain.HumanName
 import cloud.djet.catalog.catalog.domain.ContactPoint
-import cloud.djet.catalog.catalog.domain.Address
+import cloud.djet.catalog.catalog.domain.ShippingInformation
 import cloud.djet.catalog.domain.Identity
 import cloud.djet.catalog.catalog.CatalogApplication
-import cloud.djet.catalog.catalog.repository.PartyPersonsRepository
+import cloud.djet.catalog.catalog.repository.PartyAccountsRepository
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -26,15 +29,15 @@ import kotlin.test.*
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(classes = [CatalogApplication::class])
 @AutoConfigureMockMvc
-class PartyPersonsApiIT : AbstractIntegrationTest<Person>() {
+class PartyAccountsApiIT : AbstractIntegrationTest<Account>() {
 
-	private val url = "/parties/parent-id/persons"
+	private val url = "/parties/parent-id/accounts"
 
 	@Autowired
-	lateinit var repository: PartyPersonsRepository
+	lateinit var repository: PartyAccountsRepository
 
 	@Test
-	fun `partyPersonsCreatePerson with required fields`() {
+	fun `partyAccountsCreateAccount with required fields`() {
 		val res = createWithRequiredFields()
 		val result = super.create(url, res)
 		val savedRes = repository.getById(findIdentityId(result))
@@ -42,7 +45,7 @@ class PartyPersonsApiIT : AbstractIntegrationTest<Person>() {
 	}
 
 	@Test
-	fun `partyPersonsCreatePerson with all fields`() {
+	fun `partyAccountsCreateAccount with all fields`() {
 		val res = createWithAllFields()
 		val result = super.create(url, res)
 		val savedRes = repository.getById(findIdentityId(result))
@@ -50,7 +53,7 @@ class PartyPersonsApiIT : AbstractIntegrationTest<Person>() {
 	}
 
 	@Test
-	fun `partyPersonsGetPerson with required fields`() {
+	fun `partyAccountsGetAccount with required fields`() {
 		val res = createWithRequiredFields()
 		val savedRes = repository.save(res)
 
@@ -59,7 +62,7 @@ class PartyPersonsApiIT : AbstractIntegrationTest<Person>() {
 	}
 
 	@Test
-	fun `partyPersonsGetPerson with all fields`() {
+	fun `partyAccountsGetAccount with all fields`() {
 		val res = createWithAllFields()
 		val savedRes = repository.save(res)
 
@@ -68,7 +71,7 @@ class PartyPersonsApiIT : AbstractIntegrationTest<Person>() {
 	}
 
 	@Test
-	fun `partyPersonsGetPersonList api`() {
+	fun `partyAccountsGetAccountList api`() {
 		repository.deleteAll()
 		val res1 = createWithRequiredFields()
 		val res2 = createWithAllFields()
@@ -85,7 +88,7 @@ class PartyPersonsApiIT : AbstractIntegrationTest<Person>() {
 	}
 
 	@Test
-	fun `partyPersonsModifyPerson with all fields`() {
+	fun `partyAccountsModifyAccount with all fields`() {
 		val res = createWithAllFields()
 		val savedRes = repository.save(res)
 		savedRes.identity.name = "new identity"
@@ -96,7 +99,7 @@ class PartyPersonsApiIT : AbstractIntegrationTest<Person>() {
 	}
 
 	@Test
-	fun `partyPersonsUpdatePerson with required fields`() {
+	fun `partyAccountsUpdateAccount with required fields`() {
 		val res = createWithRequiredFields()
 		val savedRes = repository.save(res)
 		savedRes.identity.name = "new identity"
@@ -107,7 +110,7 @@ class PartyPersonsApiIT : AbstractIntegrationTest<Person>() {
 	}
 
 	@Test
-	fun `partyPersonsUpdatePerson with all fields`() {
+	fun `partyAccountsUpdateAccount with all fields`() {
 		val res = createWithAllFields()
 		val savedRes = repository.save(res)
 		savedRes.identity.name = "new identity"
@@ -118,7 +121,7 @@ class PartyPersonsApiIT : AbstractIntegrationTest<Person>() {
 	}
 
 
-	private fun resourceAsserts(savedResource: Person, result: MvcResult, index: Int = -1) {
+	private fun resourceAsserts(savedResource: Account, result: MvcResult, index: Int = -1) {
 		val prefix = if (index == -1) "$" else "$.content[$index]"
 		if (savedResource.id != null) {
 			assertEquals(savedResource.id, getValue(result, "$prefix.identity.id"))
@@ -128,24 +131,24 @@ class PartyPersonsApiIT : AbstractIntegrationTest<Person>() {
 		assertEquals(savedResource.identity.name, getValue(result, "$prefix.identity.name"))
 		assertEquals(savedResource.identity.description, getValue(result, "$prefix.identity.description"))
 		assertEquals(savedResource.entity.state, getValue(result, "$prefix.entity.state"))
-		assertListsEquals(savedResource.identifier, getValue(result, "$prefix.identifier"))
-		assertListsEquals(savedResource.name, getValue(result, "$prefix.name"))
-		assertListsEquals(savedResource.telecom, getValue(result, "$prefix.telecom"))
-		assertEquals(savedResource.gender, getValue(result, "$prefix.gender"))
-		assertDateEquals(savedResource.birthDate, getValue(result, "$prefix.birthDate"))
-		assertListsEquals(savedResource.address, getValue(result, "$prefix.address"))
-		assertObjectEquals(savedResource.photo, getValue(result, "$prefix.photo"))
+		assertEquals(savedResource.type, getValue(result, "$prefix.type"))
+		assertEquals(savedResource.legalEntity, getValue(result, "$prefix.legalEntity"))
+		assertEquals(savedResource.country, getValue(result, "$prefix.country"))
+		assertEquals(savedResource.accountNumber, getValue(result, "$prefix.accountNumber"))
+		assertListsEquals(savedResource.paymentInstruments, getValue(result, "$prefix.paymentInstruments"))
+		assertListsEquals(savedResource.billingInformation, getValue(result, "$prefix.billingInformation"))
+		assertListsEquals(savedResource.shippingInformation, getValue(result, "$prefix.shippingInformation"))
 	}
 
-	private fun createWithRequiredFields(): Person {
-	return Person(
-				identifier = null,
-				name = null,
-				telecom = null,
-				gender = null,
-				birthDate = null,
-				address = null,
-				photo = null
+	private fun createWithRequiredFields(): Account {
+	return Account(
+				type = "test_enum_value",
+				legalEntity = "test string value",
+				country = null,
+				accountNumber = null,
+				paymentInstruments = null,
+				billingInformation = null,
+				shippingInformation = null
 		).apply {
 			this.identity.name = "test name"
 			this.identity.description = "test description"
@@ -154,9 +157,13 @@ class PartyPersonsApiIT : AbstractIntegrationTest<Person>() {
 		}
 	}
 
-	private fun createWithAllFields(): Person {
-		return Person(
-				identifier = listOf(Identifier(
+	private fun createWithAllFields(): Account {
+		return Account(
+				type = "test_enum_value",
+				legalEntity = "test string value",
+				country = "test_enum_value",
+				accountNumber = "test string value",
+				paymentInstruments = listOf(PaymentInstrument(
 					header = Element(
 					order = 8,
 					rank = 8,
@@ -165,19 +172,24 @@ class PartyPersonsApiIT : AbstractIntegrationTest<Person>() {
 					end = Date()
 				)
 				),
-					use = "test_enum_value",
 					type = "test_enum_value",
-					system = "test string value",
-					value = "test string value",
-					description = "test string value",
-					assigner = ReferenceIdentity(
-					resourceId = "test string value",
 					name = "test string value",
-					description = "test string value",
-					type = "test string value",
-					uri = "test string value"
+					spec = PaymentInstrumentSpec(
+					bank = BankSpec(
+					routingNumber = "test string valu",
+					accountNumber = "test string valu"
 				),
-					attachment = listOf(Attachment(
+					card = CardSpec(
+					cardNumber = "test string valu",
+					cardToken = "test string value",
+					paymentURL = "test string value",
+					transactionId = "test string value",
+					approved = false,
+					paymentId = "test string value"
+				)
+				)
+				)),
+				billingInformation = listOf(BillingInformation(
 					header = Element(
 					order = 8,
 					rank = 8,
@@ -186,48 +198,7 @@ class PartyPersonsApiIT : AbstractIntegrationTest<Person>() {
 					end = Date()
 				)
 				),
-					contentType = "test string value",
-					language = "test_enum_value",
-					data = "test string value",
-					url = "test string value",
-					size = 8,
-					hash = "test string value",
-					title = "test string value",
-					creation = Date()
-				))
-				)),
-				name = listOf(HumanName(
-					header = Element(
-					order = 8,
-					rank = 8,
-					period = Period(
-					start = Date(),
-					end = Date()
-				)
-				),
-					use = "test_enum_value",
-					text = "test string value",
-					family = "test string value",
-					given = listOf("test_list_string_value"),
-					prefix = listOf("test_list_string_value"),
-					suffix = listOf("test_list_string_value")
-				)),
-				telecom = listOf(ContactPoint(
-					header = Element(
-					order = 8,
-					rank = 8,
-					period = Period(
-					start = Date(),
-					end = Date()
-				)
-				),
-					system = "test_enum_value",
-					value = "test string value",
-					use = "test_enum_value"
-				)),
-				gender = "test_enum_value",
-				birthDate = Date(),
-				address = listOf(Address(
+					address = Address(
 					header = Element(
 					order = 8,
 					rank = 8,
@@ -245,8 +216,8 @@ class PartyPersonsApiIT : AbstractIntegrationTest<Person>() {
 					state = "test string value",
 					postalCode = "test string value",
 					country = "test_enum_value"
-				)),
-				photo = Attachment(
+				),
+					name = HumanName(
 					header = Element(
 					order = 8,
 					rank = 8,
@@ -255,15 +226,112 @@ class PartyPersonsApiIT : AbstractIntegrationTest<Person>() {
 					end = Date()
 				)
 				),
-					contentType = "test string value",
-					language = "test_enum_value",
-					data = "test string value",
-					url = "test string value",
-					size = 8,
-					hash = "test string value",
-					title = "test string value",
-					creation = Date()
+					use = "test_enum_value",
+					text = "test string value",
+					family = "test string value",
+					given = listOf("test_list_string_value"),
+					prefix = listOf("test_list_string_value"),
+					suffix = listOf("test_list_string_value")
+				),
+					phone = ContactPoint(
+					header = Element(
+					order = 8,
+					rank = 8,
+					period = Period(
+					start = Date(),
+					end = Date()
 				)
+				),
+					system = "test_enum_value",
+					value = "test string value",
+					use = "test_enum_value"
+				),
+					email = ContactPoint(
+					header = Element(
+					order = 8,
+					rank = 8,
+					period = Period(
+					start = Date(),
+					end = Date()
+				)
+				),
+					system = "test_enum_value",
+					value = "test string value",
+					use = "test_enum_value"
+				)
+				)),
+				shippingInformation = listOf(ShippingInformation(
+					header = Element(
+					order = 8,
+					rank = 8,
+					period = Period(
+					start = Date(),
+					end = Date()
+				)
+				),
+					address = Address(
+					header = Element(
+					order = 8,
+					rank = 8,
+					period = Period(
+					start = Date(),
+					end = Date()
+				)
+				),
+					use = "test_enum_value",
+					type = "test_enum_value",
+					text = "test string value",
+					line = listOf("test_list_string_value"),
+					city = "test string value",
+					district = "test string value",
+					state = "test string value",
+					postalCode = "test string value",
+					country = "test_enum_value"
+				),
+					name = HumanName(
+					header = Element(
+					order = 8,
+					rank = 8,
+					period = Period(
+					start = Date(),
+					end = Date()
+				)
+				),
+					use = "test_enum_value",
+					text = "test string value",
+					family = "test string value",
+					given = listOf("test_list_string_value"),
+					prefix = listOf("test_list_string_value"),
+					suffix = listOf("test_list_string_value")
+				),
+					phone = ContactPoint(
+					header = Element(
+					order = 8,
+					rank = 8,
+					period = Period(
+					start = Date(),
+					end = Date()
+				)
+				),
+					system = "test_enum_value",
+					value = "test string value",
+					use = "test_enum_value"
+				),
+					email = ContactPoint(
+					header = Element(
+					order = 8,
+					rank = 8,
+					period = Period(
+					start = Date(),
+					end = Date()
+				)
+				),
+					system = "test_enum_value",
+					value = "test string value",
+					use = "test_enum_value"
+				),
+					deliveryInstructions = "test string value"
+				))
 		).apply {
 			this.identity.name = "test user name"
 			this.identity.description = "test user description"

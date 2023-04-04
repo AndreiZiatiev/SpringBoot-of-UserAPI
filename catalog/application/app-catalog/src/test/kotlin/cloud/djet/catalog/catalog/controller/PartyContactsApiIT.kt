@@ -140,15 +140,15 @@ class PartyContactsApiIT : AbstractIntegrationTest<Contact>() {
 					end = Date()
 				)
 				),
+					use = "test_enum_value",
+					type = "test_enum_value",
 					text = "test string value",
 					line = listOf("test_list_string_value"),
 					city = "test string value",
 					district = "test string value",
 					state = "test string value",
 					postalCode = "test string value",
-					country = "test_enum_value",
-					useFor = "test_enum_value",
-					addressType = "test_enum_value"
+					country = "test_enum_value"
 				)),
 				person = null
 		).apply {
@@ -171,15 +171,15 @@ class PartyContactsApiIT : AbstractIntegrationTest<Contact>() {
 					end = Date()
 				)
 				),
+					use = "test_enum_value",
+					type = "test_enum_value",
 					text = "test string value",
 					line = listOf("test_list_string_value"),
 					city = "test string value",
 					district = "test string value",
 					state = "test string value",
 					postalCode = "test string value",
-					country = "test_enum_value",
-					useFor = "test_enum_value",
-					addressType = "test_enum_value"
+					country = "test_enum_value"
 				)),
 				person = "test string value"
 		).apply {

@@ -5,6 +5,28 @@
 				   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 				   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
+	<changeSet author="CodeGeneration" id="create_generated_table_account" labels="version:1.4.0">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="account" />
+			</not>
+		</preConditions>
+		<createTable tableName="account">
+			<column name="id" type="${UUID}">
+				<constraints nullable="false" primaryKey="true"/>
+			</column>
+			<column name="name" type="VARCHAR(255)"/>
+			<column name="description" type="VARCHAR(4096)"/>
+			<column name="type" type="VARCHAR(255)" >
+				<constraints nullable="false"/>
+			</column>
+			<column name="legal_entity" type="VARCHAR(255)" >
+				<constraints nullable="false"/>
+			</column>
+			<column name="country" type="VARCHAR(255)" />
+			<column name="account_number" type="VARCHAR(32)" />
+		</createTable>
+	</changeSet>
 	<changeSet author="CodeGeneration" id="create_generated_table_address" labels="version:2.2.0">
 		<preConditions onFail="MARK_RAN">
 			<not>
@@ -19,6 +41,8 @@
 			<column name="header_rank_" type="int"/>
 			<column name="header_period_start" type="datetime"/>
 			<column name="header_period_end_" type="datetime"/>
+			<column name="use_" type="VARCHAR(255)" />
+			<column name="type" type="VARCHAR(255)" />
 			<column name="text" type="VARCHAR(256)" />
 			<column name="line" type="${JSON_OBJECT}"/>
 			<column name="city" type="VARCHAR(100)" />
@@ -26,8 +50,6 @@
 			<column name="state" type="VARCHAR(100)" />
 			<column name="postal_code" type="VARCHAR(64)" />
 			<column name="country" type="VARCHAR(255)" />
-			<column name="use_for" type="VARCHAR(255)" />
-			<column name="address_type" type="VARCHAR(255)" />
 		</createTable>
 	</changeSet>
 	<changeSet author="CodeGeneration" id="create_generated_table_attachment" labels="version:1.3.0">
@@ -45,7 +67,6 @@
 			<column name="header_period_start" type="datetime"/>
 			<column name="header_period_end_" type="datetime"/>
 			<column name="content_type" type="VARCHAR(100)" />
-			<column name="file_format" type="VARCHAR(10)" />
 			<column name="language" type="VARCHAR(255)" />
 			<column name="data" type="VARCHAR(2048)" />
 			<column name="url" type="VARCHAR(255)" />
@@ -53,6 +74,26 @@
 			<column name="hash" type="VARCHAR(2048)" />
 			<column name="title" type="VARCHAR(255)" />
 			<column name="creation" type="datetime" />
+		</createTable>
+	</changeSet>
+	<changeSet author="CodeGeneration" id="create_generated_table_billing_information" labels="version:1.0.1">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="billing_information" />
+			</not>
+		</preConditions>
+		<createTable tableName="billing_information">
+			<column name="id" type="${UUID}">
+				<constraints nullable="false" primaryKey="true"/>
+			</column>
+			<column name="header_order_" type="int"/>
+			<column name="header_rank_" type="int"/>
+			<column name="header_period_start" type="datetime"/>
+			<column name="header_period_end_" type="datetime"/>
+			<column name="address" type="VARCHAR(255)" />
+			<column name="name" type="VARCHAR(255)" />
+			<column name="phone" type="VARCHAR(255)" />
+			<column name="email" type="VARCHAR(255)" />
 		</createTable>
 	</changeSet>
 	<changeSet author="CodeGeneration" id="create_generated_table_binding" labels="version:1.2.0">
@@ -173,6 +214,28 @@
 			<column name="assigner" type="VARCHAR(255)" />
 		</createTable>
 	</changeSet>
+	<changeSet author="CodeGeneration" id="create_generated_table_legal_entity" labels="version:1.2.0">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="legal_entity" />
+			</not>
+		</preConditions>
+		<createTable tableName="legal_entity">
+			<column name="id" type="${UUID}">
+				<constraints nullable="false" primaryKey="true"/>
+			</column>
+			<column name="name" type="VARCHAR(255)"/>
+			<column name="description" type="VARCHAR(4096)"/>
+			<column name="type" type="VARCHAR(255)" >
+				<constraints nullable="false"/>
+			</column>
+			<column name="country" type="VARCHAR(255)" />
+			<column name="legal_entity_code" type="VARCHAR(100)" />
+			<column name="goverment_id" type="VARCHAR(100)" />
+			<column name="active_start" type="datetime"/>
+			<column name="active_end_" type="datetime"/>
+		</createTable>
+	</changeSet>
 	<changeSet author="CodeGeneration" id="create_generated_table_location" labels="version:1.0.4">
 		<preConditions onFail="MARK_RAN">
 			<not>
@@ -196,6 +259,49 @@
 			<column name="position_latitude" type="VARCHAR(255)"/>
 			<column name="availability_exceptions" type="VARCHAR(255)" />
 			<column name="part_of" type="VARCHAR(255)" />
+		</createTable>
+	</changeSet>
+	<changeSet author="CodeGeneration" id="create_generated_table_party" labels="version:1.4.0">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="party" />
+			</not>
+		</preConditions>
+		<createTable tableName="party">
+			<column name="id" type="${UUID}">
+				<constraints nullable="false" primaryKey="true"/>
+			</column>
+			<column name="name" type="VARCHAR(255)"/>
+			<column name="description" type="VARCHAR(4096)"/>
+			<column name="type" type="VARCHAR(255)" />
+			<column name="region" type="VARCHAR(255)" />
+			<column name="party_code" type="VARCHAR(32)" />
+		</createTable>
+	</changeSet>
+	<changeSet author="CodeGeneration" id="create_generated_table_payment_instrument" labels="version:1.1.0">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="payment_instrument" />
+			</not>
+		</preConditions>
+		<createTable tableName="payment_instrument">
+			<column name="id" type="${UUID}">
+				<constraints nullable="false" primaryKey="true"/>
+			</column>
+			<column name="header_order_" type="int"/>
+			<column name="header_rank_" type="int"/>
+			<column name="header_period_start" type="datetime"/>
+			<column name="header_period_end_" type="datetime"/>
+			<column name="type" type="VARCHAR(255)" />
+			<column name="name" type="VARCHAR(255)" />
+			<column name="spec_bank_routing_number" type="VARCHAR(16)"/>
+			<column name="spec_bank_account_number" type="VARCHAR(16)"/>
+			<column name="spec_card_card_number" type="VARCHAR(16)"/>
+			<column name="spec_card_card_token" type="VARCHAR(50)"/>
+			<column name="spec_card_payment_url" type="VARCHAR(255)"/>
+			<column name="spec_card_transaction_id" type="VARCHAR(255)"/>
+			<column name="spec_card_approved" type="${BOOLEAN_VALUE}"/>
+			<column name="spec_card_payment_id" type="VARCHAR(255)"/>
 		</createTable>
 	</changeSet>
 	<changeSet author="CodeGeneration" id="create_generated_table_person" labels="version:1.7.1">
@@ -264,6 +370,27 @@
 			<column name="retired_by" type="VARCHAR(256)"/>
 			<column name="completions" type="${JSON_OBJECT}"/>
 			<column name="party_id" type="${UUID}" />
+		</createTable>
+	</changeSet>
+	<changeSet author="CodeGeneration" id="create_generated_table_shipping_information" labels="version:1.2.0">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="shipping_information" />
+			</not>
+		</preConditions>
+		<createTable tableName="shipping_information">
+			<column name="id" type="${UUID}">
+				<constraints nullable="false" primaryKey="true"/>
+			</column>
+			<column name="header_order_" type="int"/>
+			<column name="header_rank_" type="int"/>
+			<column name="header_period_start" type="datetime"/>
+			<column name="header_period_end_" type="datetime"/>
+			<column name="address" type="VARCHAR(255)" />
+			<column name="name" type="VARCHAR(255)" />
+			<column name="phone" type="VARCHAR(255)" />
+			<column name="email" type="VARCHAR(255)" />
+			<column name="delivery_instructions" type="${TEXT_TYPE}" />
 		</createTable>
 	</changeSet>
 	<changeSet author="CodeGeneration" id="create_generated_table_terms_and_conditions" labels="version:1.2.0">
@@ -363,6 +490,60 @@
 		<addPrimaryKey columnNames="entity_id, attachment_id"
 					   constraintName="pk_attachment_to_entity"
 					   tableName="attachment_to_entity"/>
+	</changeSet>
+	<changeSet author="CodeGeneration" id="create_generated_join_table_account_to_payment_instrument">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="account_to_payment_instrument" />
+			</not>
+		</preConditions>
+		<createTable tableName="account_to_payment_instrument">
+			<column name="account_id" type="${UUID}">
+				<constraints nullable="false" referencedTableName="account"/>
+			</column>
+			<column name="payment_instrument_id" type="${UUID}">
+				<constraints nullable="false" referencedTableName="payment_instrument"/>
+			</column>
+		</createTable>
+		<addPrimaryKey columnNames="account_id, payment_instrument_id"
+					   constraintName="pk_account_to_payment_instrument"
+					   tableName="account_to_payment_instrument"/>
+	</changeSet>
+	<changeSet author="CodeGeneration" id="create_generated_join_table_account_to_billing_information">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="account_to_billing_information" />
+			</not>
+		</preConditions>
+		<createTable tableName="account_to_billing_information">
+			<column name="account_id" type="${UUID}">
+				<constraints nullable="false" referencedTableName="account"/>
+			</column>
+			<column name="billing_information_id" type="${UUID}">
+				<constraints nullable="false" referencedTableName="billing_information"/>
+			</column>
+		</createTable>
+		<addPrimaryKey columnNames="account_id, billing_information_id"
+					   constraintName="pk_account_to_billing_information"
+					   tableName="account_to_billing_information"/>
+	</changeSet>
+	<changeSet author="CodeGeneration" id="create_generated_join_table_account_to_shipping_information">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="account_to_shipping_information" />
+			</not>
+		</preConditions>
+		<createTable tableName="account_to_shipping_information">
+			<column name="account_id" type="${UUID}">
+				<constraints nullable="false" referencedTableName="account"/>
+			</column>
+			<column name="shipping_information_id" type="${UUID}">
+				<constraints nullable="false" referencedTableName="shipping_information"/>
+			</column>
+		</createTable>
+		<addPrimaryKey columnNames="account_id, shipping_information_id"
+					   constraintName="pk_account_to_shipping_information"
+					   tableName="account_to_shipping_information"/>
 	</changeSet>
 	<changeSet author="CodeGeneration" id="create_generated_join_table_address_to_contact">
 		<preConditions onFail="MARK_RAN">
@@ -519,7 +700,7 @@
 				<constraints nullable="false" referencedTableName="user_"/>
 			</column>
 			<column name="party_id" type="${UUID}">
-				<constraints nullable="false"/>
+				<constraints nullable="false" referencedTableName="party"/>
 			</column>
 		</createTable>
 		<addPrimaryKey columnNames="user_id, party_id"

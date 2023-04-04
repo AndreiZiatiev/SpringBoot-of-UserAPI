@@ -1,11 +1,10 @@
 package cloud.djet.catalog.catalog.controller
 
-import cloud.djet.catalog.catalog.domain.Contact
-import cloud.djet.catalog.catalog.domain.Address
-import cloud.djet.catalog.domain.Element
+import cloud.djet.catalog.catalog.domain.LegalEntity
 import cloud.djet.catalog.domain.Period
+import cloud.djet.catalog.domain.Identity
 import cloud.djet.catalog.catalog.CatalogApplication
-import cloud.djet.catalog.catalog.repository.ContactsRepository
+import cloud.djet.catalog.catalog.repository.PartyLegalEntitiesRepository
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,15 +19,15 @@ import kotlin.test.*
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(classes = [CatalogApplication::class])
 @AutoConfigureMockMvc
-class ContactsApiIT : AbstractIntegrationTest<Contact>() {
+class PartyLegalEntitiesApiIT : AbstractIntegrationTest<LegalEntity>() {
 
-	private val url = "/contacts"
+	private val url = "/parties/parent-id/legalentities"
 
 	@Autowired
-	lateinit var repository: ContactsRepository
+	lateinit var repository: PartyLegalEntitiesRepository
 
 	@Test
-	fun `contactsCreateContact with required fields`() {
+	fun `partyLegalEntitiesCreateLegalEntity with required fields`() {
 		val res = createWithRequiredFields()
 		val result = super.create(url, res)
 		val savedRes = repository.getById(findIdentityId(result))
@@ -36,7 +35,7 @@ class ContactsApiIT : AbstractIntegrationTest<Contact>() {
 	}
 
 	@Test
-	fun `contactsCreateContact with all fields`() {
+	fun `partyLegalEntitiesCreateLegalEntity with all fields`() {
 		val res = createWithAllFields()
 		val result = super.create(url, res)
 		val savedRes = repository.getById(findIdentityId(result))
@@ -44,7 +43,7 @@ class ContactsApiIT : AbstractIntegrationTest<Contact>() {
 	}
 
 	@Test
-	fun `contactsGetContact with required fields`() {
+	fun `partyLegalEntitiesGetLegalEntity with required fields`() {
 		val res = createWithRequiredFields()
 		val savedRes = repository.save(res)
 
@@ -53,7 +52,7 @@ class ContactsApiIT : AbstractIntegrationTest<Contact>() {
 	}
 
 	@Test
-	fun `contactsGetContact with all fields`() {
+	fun `partyLegalEntitiesGetLegalEntity with all fields`() {
 		val res = createWithAllFields()
 		val savedRes = repository.save(res)
 
@@ -62,7 +61,7 @@ class ContactsApiIT : AbstractIntegrationTest<Contact>() {
 	}
 
 	@Test
-	fun `contactsGetContactList api`() {
+	fun `partyLegalEntitiesGetLegalEntityList api`() {
 		repository.deleteAll()
 		val res1 = createWithRequiredFields()
 		val res2 = createWithAllFields()
@@ -79,7 +78,7 @@ class ContactsApiIT : AbstractIntegrationTest<Contact>() {
 	}
 
 	@Test
-	fun `contactsModifyContact with all fields`() {
+	fun `partyLegalEntitiesModifyLegalEntity with all fields`() {
 		val res = createWithAllFields()
 		val savedRes = repository.save(res)
 		savedRes.identity.name = "new identity"
@@ -90,7 +89,7 @@ class ContactsApiIT : AbstractIntegrationTest<Contact>() {
 	}
 
 	@Test
-	fun `contactsUpdateContact with required fields`() {
+	fun `partyLegalEntitiesUpdateLegalEntity with required fields`() {
 		val res = createWithRequiredFields()
 		val savedRes = repository.save(res)
 		savedRes.identity.name = "new identity"
@@ -101,7 +100,7 @@ class ContactsApiIT : AbstractIntegrationTest<Contact>() {
 	}
 
 	@Test
-	fun `contactsUpdateContact with all fields`() {
+	fun `partyLegalEntitiesUpdateLegalEntity with all fields`() {
 		val res = createWithAllFields()
 		val savedRes = repository.save(res)
 		savedRes.identity.name = "new identity"
@@ -112,7 +111,7 @@ class ContactsApiIT : AbstractIntegrationTest<Contact>() {
 	}
 
 
-	private fun resourceAsserts(savedResource: Contact, result: MvcResult, index: Int = -1) {
+	private fun resourceAsserts(savedResource: LegalEntity, result: MvcResult, index: Int = -1) {
 		val prefix = if (index == -1) "$" else "$.content[$index]"
 		if (savedResource.id != null) {
 			assertEquals(savedResource.id, getValue(result, "$prefix.identity.id"))
@@ -123,67 +122,42 @@ class ContactsApiIT : AbstractIntegrationTest<Contact>() {
 		assertEquals(savedResource.identity.description, getValue(result, "$prefix.identity.description"))
 		assertEquals(savedResource.entity.state, getValue(result, "$prefix.entity.state"))
 		assertEquals(savedResource.type, getValue(result, "$prefix.type"))
-		assertListsEquals(savedResource.address, getValue(result, "$prefix.address"))
-		assertEquals(savedResource.person, getValue(result, "$prefix.person"))
+		assertEquals(savedResource.country, getValue(result, "$prefix.country"))
+		assertEquals(savedResource.legalEntityCode, getValue(result, "$prefix.legalEntityCode"))
+		assertEquals(savedResource.govermentId, getValue(result, "$prefix.govermentId"))
+		assertObjectEquals(savedResource.active, getValue(result, "$prefix.active"))
 	}
 
-	private fun createWithRequiredFields(): Contact {
-	return Contact(
+	private fun createWithRequiredFields(): LegalEntity {
+	return LegalEntity(
 				type = "test_enum_value",
-				address = listOf(Address(
-					header = Element(
-					order = 8,
-					rank = 8,
-					period = Period(
-					start = Date(),
-					end = Date()
-				)
-				),
-					use = "test_enum_value",
-					type = "test_enum_value",
-					text = "test string value",
-					line = listOf("test_list_string_value"),
-					city = "test string value",
-					district = "test string value",
-					state = "test string value",
-					postalCode = "test string value",
-					country = "test_enum_value"
-				)),
-				person = null
+				country = null,
+				legalEntityCode = null,
+				govermentId = null,
+				active = null
 		).apply {
 			this.identity.name = "test name"
 			this.identity.description = "test description"
 			this.entity.state = "active"
+			this.entity.parent = Identity(id = "parent-id")
 		}
 	}
 
-	private fun createWithAllFields(): Contact {
-		return Contact(
+	private fun createWithAllFields(): LegalEntity {
+		return LegalEntity(
 				type = "test_enum_value",
-				address = listOf(Address(
-					header = Element(
-					order = 8,
-					rank = 8,
-					period = Period(
+				country = "test_enum_value",
+				legalEntityCode = "test string value",
+				govermentId = "test string value",
+				active = Period(
 					start = Date(),
 					end = Date()
 				)
-				),
-					use = "test_enum_value",
-					type = "test_enum_value",
-					text = "test string value",
-					line = listOf("test_list_string_value"),
-					city = "test string value",
-					district = "test string value",
-					state = "test string value",
-					postalCode = "test string value",
-					country = "test_enum_value"
-				)),
-				person = "test string value"
 		).apply {
 			this.identity.name = "test user name"
 			this.identity.description = "test user description"
 			this.entity.state = "active"
+			this.entity.parent = Identity(id = "parent-id")
 		}
 	}
 
