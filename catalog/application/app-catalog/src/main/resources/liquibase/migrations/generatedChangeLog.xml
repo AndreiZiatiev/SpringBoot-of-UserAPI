@@ -74,6 +74,7 @@
 			<column name="hash" type="VARCHAR(2048)" />
 			<column name="title" type="VARCHAR(255)" />
 			<column name="creation" type="datetime" />
+			<column name="file_format" type="VARCHAR(10)" />
 		</createTable>
 	</changeSet>
 	<changeSet author="CodeGeneration" id="create_generated_table_billing_information" labels="version:1.0.1">

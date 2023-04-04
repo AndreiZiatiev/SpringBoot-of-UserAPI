@@ -19,6 +19,7 @@ import org.hibernate.annotations.LazyCollectionOption
 * @param hash Hash of the data (sha-1, base64ed)
 * @param title Label to display in place of the data
 * @param creation Date attachment was first created
+* @param fileFormat Format of the attached file.
 */
 @javax.annotation.Generated(value = ["org.openapitools.codegen.CodeCodegen"])
 
@@ -57,7 +58,10 @@ data class Attachment(
 	var title: String?,
 
 	@Column(name = "creation")
-	var creation: Date?
+	var creation: Date?,
+
+	@Column(name = "file_format")
+	var fileFormat: String?
 
 ) : BaseDomain()
 

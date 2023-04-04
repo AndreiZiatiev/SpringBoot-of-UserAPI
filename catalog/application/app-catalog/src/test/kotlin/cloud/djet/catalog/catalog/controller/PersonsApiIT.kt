@@ -142,7 +142,8 @@ class PersonsApiIT : AbstractIntegrationTest<Person>() {
 					size = 8,
 					hash = "test string value",
 					title = "test string value",
-					creation = Date()
+					creation = Date(),
+					fileFormat = "test strin"
 				))
 				)),
 				name = listOf(HumanName(
@@ -211,7 +212,8 @@ class PersonsApiIT : AbstractIntegrationTest<Person>() {
 					size = 8,
 					hash = "test string value",
 					title = "test string value",
-					creation = Date()
+					creation = Date(),
+					fileFormat = "test strin"
 				)
 		).apply {
 			this.identity.name = "test user name"
