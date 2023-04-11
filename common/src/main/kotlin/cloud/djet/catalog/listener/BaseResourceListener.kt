@@ -27,7 +27,6 @@ class BaseResourceListener : AuditorAware<UUID> {
 	@PreUpdate
 	fun <T : BaseResource> touchForUpdate(domain: T) {
 		val now = Date()
-
 		domain.entity.history.updatedBy = currentAuditor.orElse(null)?.toString()
 		domain.entity.history.updatedAt = now
 	}

@@ -1,6 +1,6 @@
 package cloud.djet.catalog.catalog.domain
 
-import cloud.djet.catalog.domain.BaseDomain
+import cloud.djet.catalog.domain.BaseResource
 import com.fasterxml.jackson.annotation.*
 import javax.persistence.*
 import org.hibernate.annotations.LazyCollection
@@ -37,5 +37,5 @@ data class ReferenceIdentity(
 	@Column(name = "uri")
 	var uri: String?
 
-) : BaseDomain()
+) : BaseResource()
 
